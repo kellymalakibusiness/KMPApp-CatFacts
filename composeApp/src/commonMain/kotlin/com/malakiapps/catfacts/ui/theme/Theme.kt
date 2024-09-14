@@ -1,5 +1,6 @@
 package com.malakiapps.catfacts.ui.theme
 
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material.Colors
 import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
@@ -17,7 +18,7 @@ import org.jetbrains.compose.resources.Font
 val lightScheme = Colors(
     primary = Color(0xFF6C538B),
     onPrimary = Color(0xFFFFFFFF),
-    primaryVariant = Color(0xFFEEDBFF),
+    primaryVariant = Color(0xFFE8E0EB),
     secondary = Color(0xFF256489),
     onSecondary = Color(0xFFFFFFFF),
     secondaryVariant = Color(0xFFC9E6FF),
@@ -49,7 +50,7 @@ val darkScheme = Colors(
 @Composable
 fun CatFactsMaterialTheme(appBody: @Composable () -> Unit) {
     MaterialTheme(
-        colors = if(androidx.compose.foundation.isSystemInDarkTheme()){
+        colors = if(isSystemInDarkTheme()){
             darkScheme
         } else {
             lightScheme
@@ -81,6 +82,7 @@ fun CatFactsMaterialTheme(appBody: @Composable () -> Unit) {
             )
         )
     ){
+        SetStatusBarColor(MaterialTheme.colors.surface, darkIcons = !isSystemInDarkTheme())
         appBody()
     }
 }
