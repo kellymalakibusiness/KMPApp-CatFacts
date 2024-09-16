@@ -1,12 +1,15 @@
 package com.malakiapps.catfacts.ui.theme
 
 import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Colors
 import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Shapes
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import catfacts.composeapp.generated.resources.Res
 import catfacts.composeapp.generated.resources.gravitas_one_regular
@@ -80,6 +83,11 @@ fun CatFactsMaterialTheme(appBody: @Composable () -> Unit) {
                     )
                 )
             )
+        ),
+        shapes = Shapes(
+            small = RoundedCornerShape(14.dp),
+            medium = RoundedCornerShape(12.dp),
+            large = RoundedCornerShape(0.dp)
         )
     ){
         SetStatusBarColor(MaterialTheme.colors.surface, darkIcons = !isSystemInDarkTheme())
