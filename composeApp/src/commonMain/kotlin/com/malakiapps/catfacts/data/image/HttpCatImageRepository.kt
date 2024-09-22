@@ -10,7 +10,7 @@ import io.ktor.client.request.parameter
 import io.ktor.util.network.UnresolvedAddressException
 import kotlinx.serialization.SerializationException
 
-class HttpImageRepository(
+class HttpCatImageRepository(
     private val httpClient: HttpClient
 ): CatImageRepository {
     override suspend fun getImages(count: Int): Result<List<CatImageDOT>, NetworkError> {
