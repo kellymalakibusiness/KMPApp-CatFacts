@@ -19,10 +19,12 @@ koin = "3.6.0-Beta4"
 koinComposeMultiplatform = "1.2.0-Beta4"
 navigationCompose = "2.8.0-alpha02"
 lifecycleViewModel = "2.8.2"
-#ktor = "2.3.12"
 
 coil = "3.0.0-alpha06"
 ktor = "3.0.0-wasm2"
+
+#realm
+realm = "2.3.0"
 
 
 
@@ -66,6 +68,10 @@ coil-compose-core = { module = "io.coil-kt.coil3:coil-compose-core", version.ref
 coil-network-ktor = { module = "io.coil-kt.coil3:coil-network-ktor", version.ref = "coil" }
 coil-mp = { module = "io.coil-kt.coil3:coil", version.ref = "coil" }
 
+#Realm
+realm-core = { module = "io.realm.kotlin:library-base", version.ref = "realm"}
+#realm-coroutines = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.0", version.ref = "realm"}
+
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }
 androidLibrary = { id = "com.android.library", version.ref = "agp" }
@@ -73,6 +79,9 @@ jetbrainsCompose = { id = "org.jetbrains.compose", version.ref = "compose-plugin
 compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 kotlinMultiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
 kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
+
+#Realm
+realm-kotlin = { id = "io.realm.kotlin", version.ref = "realm" }
 
 [bundles]
 ktor = [

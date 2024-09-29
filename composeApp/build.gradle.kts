@@ -8,6 +8,7 @@ plugins {
     alias(libs.plugins.jetbrainsCompose)
     alias(libs.plugins.compose.compiler)
     alias(libs.plugins.kotlin.serialization)
+    alias(libs.plugins.realm.kotlin)
 }
 
 kotlin {
@@ -63,7 +64,7 @@ kotlin {
             implementation(libs.coil.network.ktor)
             implementation(libs.coil.compose)
 
-
+            implementation(libs.realm.core)
         }
 
         nativeMain.dependencies {

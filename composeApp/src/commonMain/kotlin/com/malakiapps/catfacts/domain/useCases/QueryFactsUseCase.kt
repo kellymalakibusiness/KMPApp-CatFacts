@@ -1,15 +1,19 @@
 package com.malakiapps.catfacts.domain.useCases
 
+import androidx.compose.runtime.mutableStateOf
 import com.malakiapps.catfacts.data.common.getOrNull
 import com.malakiapps.catfacts.data.fact.FactRepository
 import com.malakiapps.catfacts.data.image.CatImageRepository
+import com.malakiapps.catfacts.data.localDatabase.LocalStorageRepository
 import com.malakiapps.catfacts.domain.CatFact
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.flow.collectLatest
 
 class QueryFactsUseCase(
     private val factRepository: FactRepository,
-    private val imageRepository: CatImageRepository
+    private val imageRepository: CatImageRepository,
+    private val localStorageRepository: LocalStorageRepository
 ) {
 
     suspend fun invoke(): List<CatFact> {
@@ -24,15 +28,28 @@ class QueryFactsUseCase(
 
             factsResponse.mapIndexed { index, fact ->
                 val image = imageResponse[index]
-                CatFact(
+
+                localStorageRepository.getFactByText(text = fact)?.let { localFact ->
+                    if(localFact.image == ""){
+                        localFact.copy(
+                            isHorizontalCard = image.height > image.width,
+                            image = image.url,
+                            imageWidth = image.width,
+                            imageHeight = image.height,
+                            text = fact
+                        )
+                    } else {
+                        localFact
+                    }
+                } ?: CatFact(
                     isHorizontalCard = image.height > image.width,
                     image = image.url,
                     imageWidth = image.width,
                     imageHeight = image.height,
                     text = fact,
-                    liked = false, //Implement something to check this
-                    downloaded = false, //Implement something to check this
-                    disliked = false //Implement something to check this
+                    liked = false,
+                    downloaded = false,
+                    disliked = false
                 )
             }
         }

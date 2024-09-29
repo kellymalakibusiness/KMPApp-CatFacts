@@ -66,7 +66,6 @@ import catfacts.composeapp.generated.resources.profile
 import catfacts.composeapp.generated.resources.settings
 import catfacts.composeapp.generated.resources.user_down
 import catfacts.composeapp.generated.resources.user_up
-import coil3.compose.AsyncImage
 import coil3.compose.SubcomposeAsyncImage
 import com.malakiapps.catfacts.domain.CatFact
 import com.malakiapps.catfacts.domain.MainViewModel
@@ -118,7 +117,7 @@ fun MainScreen(mainViewModel: MainViewModel, modifier: Modifier = Modifier) {
                 }
             }
         } else {
-            itemsIndexed(items = facts){ _, fact ->
+            itemsIndexed(items = facts/*, key = */){ _, fact ->
                 if(fact == null){
                     LoadingCard()
                 } else {
@@ -126,26 +125,26 @@ fun MainScreen(mainViewModel: MainViewModel, modifier: Modifier = Modifier) {
                         HorizontalFact(
                             catFact = fact,
                             onLike = {
-                                //TODO()
+                                mainViewModel.onFactLike(fact.text, it)
                             },
                             onDislike = {
-                                //TODO()
+                                mainViewModel.onFactDisLike(fact.text, it)
                             },
                             download = {
-                                //TODO()
+                                mainViewModel.onFactDownload(fact, it)
                             }
                         )
                     } else {
                         VerticalFact(
                             catFact = fact,
                             onLike = {
-                                //TODO()
+                                mainViewModel.onFactLike(fact.text, it)
                             },
                             onDislike = {
-                                //TODO()
+                                mainViewModel.onFactDisLike(fact.text, it)
                             },
                             download = {
-                                //TODO()
+                                mainViewModel.onFactDownload(fact, it)
                             }
                         )
                     }
@@ -464,11 +463,17 @@ private fun Modifier.loadingEffect(shape: Shape): Modifier = composed {
 }
 
 private fun CatFact.getLoadingWidth(): Double {
-    return this.imageWidth/this.imageHeight * 77.0
+    val width = imageWidth ?: 1
+    val height = imageHeight ?: 1
+
+    return width / height * 77.0
 }
 
 private fun CatFact.getLoadingHeight(): Double {
-    return this.imageHeight/this.imageWidth * 101.0
+    val width = imageWidth ?: 1
+    val height = imageHeight ?: 1
+
+    return height / width * 101.0
 }
 
 private enum class FactsFetchingLevels{
