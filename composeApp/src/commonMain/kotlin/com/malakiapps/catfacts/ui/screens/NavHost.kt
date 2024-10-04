@@ -14,6 +14,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.malakiapps.catfacts.domain.MainViewModel
+import com.malakiapps.catfacts.ui.screens.common.MainScreenScaffold
 import com.malakiapps.catfacts.ui.screens.main_screen.CatFactsBottomBar
 import com.malakiapps.catfacts.ui.screens.main_screen.CatFactsTopAppBar
 import com.malakiapps.catfacts.ui.screens.main_screen.MainScreen
@@ -24,74 +25,44 @@ import org.koin.compose.koinInject
 @Composable
 fun CatFactsMain(modifier: Modifier = Modifier) {
     val navController = rememberNavController()
-    val navBackStackEntry by navController.currentBackStackEntryAsState()
     val mainViewModel: MainViewModel = koinInject()
 
-    val showScaffold = navBackStackEntry?.destination?.route.let { route ->
-        (route == SupportedScreens.FACTS.destination || route == SupportedScreens.PROFILE.destination)
-    }
-
-    if(showScaffold){
-        Scaffold(
-            modifier = modifier.statusBarsPadding(),
-            backgroundColor = MaterialTheme.colors.background,
-            topBar = {
-                CatFactsTopAppBar(onSettingsClick = {
-                    navController.navigateSingleTopToScreen(screen = SupportedScreens.SETTINGS)
-                })
-            },
-            bottomBar = {
-                CatFactsBottomBar(
-                    currentScreen = navBackStackEntry?.destination?.route,
-                    onFragmentChange = { currentScreen ->
-                        navController.navigateSingleTopToScreen(screen = currentScreen)
-                    }
-                )
-            }
-        ) { innerPadding ->
-            CatFactsNavHost(
-                navController = navController,
-                mainViewModel = mainViewModel,
-                modifier = Modifier.fillMaxSize()
-                    .padding(innerPadding)
-            )
-        }
-    } else {
-        CatFactsNavHost(
-            navController = navController,
-            mainViewModel = mainViewModel,
-            modifier = Modifier.fillMaxSize()
-        )
-    }
+    CatFactsNavHost(
+        navController = navController,
+        mainViewModel = mainViewModel,
+        modifier = modifier.fillMaxSize()
+    )
 }
 
 @Composable
 private fun CatFactsNavHost(navController: NavHostController, mainViewModel: MainViewModel, modifier: Modifier = Modifier) {
     NavHost(navController = navController, startDestination = SupportedScreens.FACTS.destination, modifier = modifier){
         composable(route = SupportedScreens.FACTS.destination){
-            MainScreen(
-                mainViewModel = mainViewModel,
+            MainScreenScaffold(
+                navController = navController,
                 modifier = Modifier.fillMaxSize()
-            )
+            ){ innerPadding ->
+                MainScreen(
+                    mainViewModel = mainViewModel,
+                    modifier = Modifier.padding(innerPadding)
+                )
+            }
         }
 
         composable(route = SupportedScreens.PROFILE.destination){
-            ProfileScreen(modifier = Modifier.fillMaxSize())
+            MainScreenScaffold(
+                navController = navController,
+                modifier = Modifier.fillMaxSize()
+            ){ innerPadding ->
+                ProfileScreen(
+                    mainViewModel = mainViewModel,
+                    modifier = Modifier.padding(innerPadding)
+                )
+            }
         }
 
         composable(route = SupportedScreens.SETTINGS.destination){
             SettingsScreen(modifier = Modifier.fillMaxSize())
-        }
-    }
-}
-
-private fun NavHostController.navigateSingleTopToScreen(screen: SupportedScreens, popUpToMainScreen: Boolean = false){
-    navigate(screen.destination){
-        launchSingleTop = true
-        if (popUpToMainScreen){
-            popUpTo(SupportedScreens.FACTS.destination){
-                saveState = true
-            }
         }
     }
 }
