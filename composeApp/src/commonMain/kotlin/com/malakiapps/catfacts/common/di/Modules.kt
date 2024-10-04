@@ -1,5 +1,7 @@
 package com.malakiapps.catfacts.common.di
 
+import com.malakiapps.catfacts.data.common.GetDataStorePath
+import com.malakiapps.catfacts.data.common.createDatastore
 import com.malakiapps.catfacts.data.common.createHttpClient
 import com.malakiapps.catfacts.data.common.initializeRealmDB
 import com.malakiapps.catfacts.data.fact.DummyFactRepository
@@ -39,4 +41,8 @@ val sharedModule = module {
 
     singleOf(::QueryFactsUseCase)
     viewModelOf(::MainViewModel)
+
+    single {
+        createDatastore(get())
+    }
 }

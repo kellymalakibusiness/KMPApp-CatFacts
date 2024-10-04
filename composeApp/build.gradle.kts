@@ -65,6 +65,9 @@ kotlin {
             implementation(libs.coil.compose)
 
             implementation(libs.realm.core)
+
+            api(libs.datastore.preferences)
+            api(libs.datastore)
         }
 
         nativeMain.dependencies {

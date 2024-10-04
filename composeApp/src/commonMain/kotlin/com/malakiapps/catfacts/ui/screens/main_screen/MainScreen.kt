@@ -466,14 +466,14 @@ private fun CatFact.getLoadingWidth(): Double {
     val width = imageWidth ?: 1
     val height = imageHeight ?: 1
 
-    return width / height * 77.0
+    return width / (height * 77.0)
 }
 
 private fun CatFact.getLoadingHeight(): Double {
     val width = imageWidth ?: 1
     val height = imageHeight ?: 1
 
-    return height / width * 101.0
+    return height / (width * 101.0)
 }
 
 private enum class FactsFetchingLevels{

@@ -26,6 +26,9 @@ ktor = "3.0.0-wasm2"
 #realm
 realm = "2.3.0"
 
+#datastore
+datastore = "1.1.1"
+
 
 
 
@@ -71,6 +74,10 @@ coil-mp = { module = "io.coil-kt.coil3:coil", version.ref = "coil" }
 #Realm
 realm-core = { module = "io.realm.kotlin:library-base", version.ref = "realm"}
 #realm-coroutines = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.0", version.ref = "realm"}
+
+#Datastore
+datastore = { module = "androidx.datastore:datastore", version.ref = "datastore" }
+datastore-preferences = { module = "androidx.datastore:datastore-preferences", version.ref = "datastore" }
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }
