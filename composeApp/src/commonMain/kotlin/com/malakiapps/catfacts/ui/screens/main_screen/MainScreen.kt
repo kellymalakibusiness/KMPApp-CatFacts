@@ -258,6 +258,7 @@ fun HorizontalFact(
     Card(
         modifier = modifier,
         shape = MaterialTheme.shapes.medium,
+        elevation = 5.dp,
         backgroundColor = MaterialTheme.colors.surface
     ){
         Column(
@@ -306,6 +307,7 @@ fun VerticalFact(
     Card(
         modifier = modifier,
         shape = MaterialTheme.shapes.medium,
+        elevation = 5.dp,
         backgroundColor = MaterialTheme.colors.surface
     ){
         Column(
