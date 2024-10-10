@@ -12,8 +12,11 @@ import com.malakiapps.catfacts.data.image.DummyImageRepository
 import com.malakiapps.catfacts.data.image.HttpCatImageRepository
 import com.malakiapps.catfacts.data.localDatabase.LocalStorageRepository
 import com.malakiapps.catfacts.data.localDatabase.RealmLocalStorageRepository
+import com.malakiapps.catfacts.domain.AboutViewModel
+import com.malakiapps.catfacts.domain.LanguageViewModel
 import com.malakiapps.catfacts.domain.MainViewModel
 import com.malakiapps.catfacts.domain.useCases.QueryFactsUseCase
+import com.malakiapps.catfacts.domain.useCases.ReadCurrentLanguageUseCase
 import io.ktor.client.engine.HttpClientEngine
 import org.koin.compose.viewmodel.dsl.viewModelOf
 import org.koin.core.module.Module
@@ -41,6 +44,10 @@ val sharedModule = module {
 
     singleOf(::QueryFactsUseCase)
     viewModelOf(::MainViewModel)
+    viewModelOf(::LanguageViewModel)
+    singleOf(::ReadCurrentLanguageUseCase)
+
+    viewModelOf(::AboutViewModel)
 
     single {
         createDatastore(get())

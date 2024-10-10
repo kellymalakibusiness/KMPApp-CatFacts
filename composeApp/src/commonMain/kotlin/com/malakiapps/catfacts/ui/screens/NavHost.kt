@@ -14,7 +14,9 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.malakiapps.catfacts.domain.MainViewModel
+import com.malakiapps.catfacts.ui.screens.about_screen.AboutScreen
 import com.malakiapps.catfacts.ui.screens.common.MainScreenScaffold
+import com.malakiapps.catfacts.ui.screens.language_screen.LanguageScreen
 import com.malakiapps.catfacts.ui.screens.main_screen.CatFactsBottomBar
 import com.malakiapps.catfacts.ui.screens.main_screen.CatFactsTopAppBar
 import com.malakiapps.catfacts.ui.screens.main_screen.MainScreen
@@ -62,7 +64,24 @@ private fun CatFactsNavHost(navController: NavHostController, mainViewModel: Mai
         }
 
         composable(route = SupportedScreens.SETTINGS.destination){
-            SettingsScreen(modifier = Modifier.fillMaxSize())
+            SettingsScreen(
+                navHostController = navController,
+                modifier = Modifier.fillMaxSize(),
+                )
+        }
+
+        composable(route = SupportedScreens.LANGUAGE.destination){
+            LanguageScreen(
+                navHostController = navController,
+                modifier = Modifier.fillMaxSize(),
+            )
+        }
+
+        composable(route = SupportedScreens.ABOUT.destination){
+            AboutScreen(
+                navHostController = navController,
+                modifier = Modifier.fillMaxSize(),
+            )
         }
     }
 }

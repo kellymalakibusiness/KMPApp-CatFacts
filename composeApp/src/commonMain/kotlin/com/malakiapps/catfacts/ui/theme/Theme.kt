@@ -67,6 +67,14 @@ fun CatFactsMaterialTheme(appBody: @Composable () -> Unit) {
                     )
                 )
             ),
+            h2 = TextStyle(
+                fontSize = 22.sp,
+                fontFamily = FontFamily(
+                    Font(
+                        resource = Res.font.playpen_sans_medium
+                    )
+                )
+            ),
             body1 = TextStyle(
                 fontSize = 14.sp,
                 fontFamily = FontFamily(

@@ -5,9 +5,9 @@ import androidx.datastore.preferences.core.PreferenceDataStoreFactory
 import androidx.datastore.preferences.core.Preferences
 import okio.Path.Companion.toPath
 
-fun createDatastore(getDataStorePath: GetDataStorePath): DataStore<Preferences> {
+fun createDatastore(dataStorePath: DataStorePath): DataStore<Preferences> {
     return PreferenceDataStoreFactory.createWithPath(
-        produceFile = { getDataStorePath.getThePath().path.toPath() }
+        produceFile = { dataStorePath.path.toPath() }
     )
 }
 
@@ -20,3 +20,7 @@ data class DataStorePath(
 )
 
 internal const val DATASTORE_FILE_NAME = "catfacts.preferences_pb"
+
+data object DataStoreKeys {
+    val language = "language"
+}

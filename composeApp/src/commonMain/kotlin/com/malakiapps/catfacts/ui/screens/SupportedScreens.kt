@@ -4,4 +4,7 @@ enum class SupportedScreens(val destination: String) {
     FACTS("facts"),
     PROFILE("profile"),
     SETTINGS("settings"),
+    USER_DETAILS("user_details"),
+    LANGUAGE("language"),
+    ABOUT("about")
 }
