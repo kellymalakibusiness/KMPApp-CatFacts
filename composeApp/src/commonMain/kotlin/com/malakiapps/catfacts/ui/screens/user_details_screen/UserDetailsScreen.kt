@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.Text
@@ -19,10 +20,11 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import catfacts.composeapp.generated.resources.Res
-import catfacts.composeapp.generated.resources.user_details
 import catfacts.composeapp.generated.resources.user_profile
 import coil3.compose.rememberAsyncImagePainter
 import com.malakiapps.catfacts.domain.UserDetailsViewModel
@@ -79,6 +81,7 @@ private fun ProfilePictureSelector(image: ByteArray?, onEdit: () -> Unit, modifi
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = modifier
+            .clip(MaterialTheme.shapes.small)
             .clickable {
             onEdit()
             }
@@ -92,8 +95,12 @@ private fun ProfilePictureSelector(image: ByteArray?, onEdit: () -> Unit, modifi
         Image(
             painter = painter,
             contentDescription = "User profile picture",
-            modifier = Modifier.size(88.dp).padding(bottom = 8.dp)
+            contentScale = ContentScale.Crop,
+            modifier = Modifier
+                .size(88.dp)
+                .clip(CircleShape)
         )
+        Spacer(Modifier.height(8.dp))
         Text(
             text = "Edit",
             color = MaterialTheme.colors.primary,
