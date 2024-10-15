@@ -22,6 +22,7 @@ import com.malakiapps.catfacts.ui.screens.main_screen.CatFactsTopAppBar
 import com.malakiapps.catfacts.ui.screens.main_screen.MainScreen
 import com.malakiapps.catfacts.ui.screens.profile_screen.ProfileScreen
 import com.malakiapps.catfacts.ui.screens.settings_screen.SettingsScreen
+import com.malakiapps.catfacts.ui.screens.user_details_screen.UserDetailsScreen
 import org.koin.compose.koinInject
 
 @Composable
@@ -79,6 +80,13 @@ private fun CatFactsNavHost(navController: NavHostController, mainViewModel: Mai
 
         composable(route = SupportedScreens.ABOUT.destination){
             AboutScreen(
+                navHostController = navController,
+                modifier = Modifier.fillMaxSize(),
+            )
+        }
+
+        composable(route = SupportedScreens.USER_DETAILS.destination){
+            UserDetailsScreen(
                 navHostController = navController,
                 modifier = Modifier.fillMaxSize(),
             )

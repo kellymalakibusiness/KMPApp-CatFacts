@@ -43,8 +43,7 @@ fun SettingsScreen(navHostController: NavHostController, modifier: Modifier = Mo
                 icon = Res.drawable.user_details,
                 text = "User details",
                 onClick = {
-                    //TODO("Open user details")
-                    //navHostController.
+                    navHostController.navigate(route = SupportedScreens.USER_DETAILS.destination)
                 }
             )
             SettingsRow(

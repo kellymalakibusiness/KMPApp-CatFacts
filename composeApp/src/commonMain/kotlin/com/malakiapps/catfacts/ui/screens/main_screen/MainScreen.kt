@@ -374,7 +374,7 @@ fun LoadingCard(modifier: Modifier = Modifier) {
 }
 
 @Composable
-fun FeedbackRow(
+private fun FeedbackRow(
     catFact: CatFact,
     onLike: (Boolean) -> Unit,
     onDislike: (Boolean) -> Unit,
@@ -426,7 +426,7 @@ fun FeedbackRow(
 }
 
 @Composable
-private fun LoadingImage(shape: Shape, modifier: Modifier){
+fun LoadingImage(shape: Shape, modifier: Modifier){
     Box(
         modifier = modifier.loadingEffect(shape = shape)
     )
@@ -464,14 +464,14 @@ private fun Modifier.loadingEffect(shape: Shape): Modifier = composed {
         }
 }
 
-private fun CatFact.getLoadingWidth(): Double {
+fun CatFact.getLoadingWidth(): Double {
     val width = imageWidth ?: 1
     val height = imageHeight ?: 1
 
     return width / (height * 77.0)
 }
 
-private fun CatFact.getLoadingHeight(): Double {
+fun CatFact.getLoadingHeight(): Double {
     val width = imageWidth ?: 1
     val height = imageHeight ?: 1
 

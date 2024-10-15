@@ -15,6 +15,7 @@ import com.malakiapps.catfacts.data.localDatabase.RealmLocalStorageRepository
 import com.malakiapps.catfacts.domain.AboutViewModel
 import com.malakiapps.catfacts.domain.LanguageViewModel
 import com.malakiapps.catfacts.domain.MainViewModel
+import com.malakiapps.catfacts.domain.UserDetailsViewModel
 import com.malakiapps.catfacts.domain.useCases.QueryFactsUseCase
 import com.malakiapps.catfacts.domain.useCases.ReadCurrentLanguageUseCase
 import io.ktor.client.engine.HttpClientEngine
@@ -48,6 +49,7 @@ val sharedModule = module {
     singleOf(::ReadCurrentLanguageUseCase)
 
     viewModelOf(::AboutViewModel)
+    viewModelOf(::UserDetailsViewModel)
 
     single {
         createDatastore(get())

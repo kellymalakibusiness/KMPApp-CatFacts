@@ -7,11 +7,9 @@ import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.malakiapps.catfacts.data.common.DataStoreKeys
-import com.malakiapps.catfacts.domain.SupportedLanguages.Companion.isoCodeToSupportedLanguage
 import com.malakiapps.catfacts.domain.useCases.ReadCurrentLanguageUseCase
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.launch
 
 class LanguageViewModel(
