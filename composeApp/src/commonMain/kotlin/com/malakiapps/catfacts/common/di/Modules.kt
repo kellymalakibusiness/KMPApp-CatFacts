@@ -49,9 +49,10 @@ val sharedModule = module {
     singleOf(::ReadCurrentLanguageUseCase)
 
     viewModelOf(::AboutViewModel)
-    viewModelOf(::UserDetailsViewModel)
 
     single {
         createDatastore(get())
     }
+
+    viewModelOf(::UserDetailsViewModel)
 }

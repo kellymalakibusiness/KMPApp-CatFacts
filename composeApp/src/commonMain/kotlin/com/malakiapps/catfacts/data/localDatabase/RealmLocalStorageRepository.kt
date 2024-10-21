@@ -9,6 +9,7 @@ import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
+import org.mongodb.kbson.BsonObjectId
 
 class RealmLocalStorageRepository(
     private val realm: Realm
@@ -91,5 +92,33 @@ class RealmLocalStorageRepository(
                 copyToRealm(newItem)
             }
         }
+    }
+
+    override suspend fun saveImageByteArray(id: String?, image: ByteArray): String {
+        val finalId = id?.let {
+            BsonObjectId(it)
+        } ?: BsonObjectId()
+
+        val currentItem = readImageByteArray(id = finalId.toHexString())
+
+        if (!currentItem.contentEquals(image)){
+            val newItem = ByteArrayImage().apply {
+                this._id = finalId
+                this.data = image
+            }
+
+            realm.write {
+                copyToRealm(newItem)
+            }
+        }
+
+        return finalId.toHexString()
+    }
+
+    override suspend fun readImageByteArray(id: String): ByteArray? {
+        val bsonObjectId = BsonObjectId(id)
+        val response = realm.query<ByteArrayImage>("_id == $0", bsonObjectId).first().find()
+
+        return response?.data
     }
 }

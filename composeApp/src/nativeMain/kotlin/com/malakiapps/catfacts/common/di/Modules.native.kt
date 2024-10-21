@@ -18,6 +18,6 @@ actual val platformModule: Module = module {
         LinkOpener()
     }
     single {
-        ImageSelector(get())
+        ImageSelector()
     }
 }
