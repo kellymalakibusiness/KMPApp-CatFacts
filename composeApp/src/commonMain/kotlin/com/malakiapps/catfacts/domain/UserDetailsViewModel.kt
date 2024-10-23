@@ -8,6 +8,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.malakiapps.catfacts.data.common.DataStoreKeys
 import com.malakiapps.catfacts.data.localDatabase.LocalStorageRepository
+
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.update
@@ -24,22 +25,6 @@ class UserDetailsViewModel(
         viewModelScope.launch {
             //Before we start reading, we check if we already have a saved image on database
             initialFetchCurrentImage()
-
-            //Save the image on each selection
-            userProfileImage.collect { newImage ->
-                if (newImage != null) {
-                    val imageId = getImageId()
-
-                    if (imageId == null) {
-                        //No image on the database, create a new one
-                        val newId =
-                            localStorageRepository.saveImageByteArray(id = null, image = newImage)
-                        saveImageId(newId)
-                    } else {
-                        localStorageRepository.saveImageByteArray(id = imageId, image = newImage)
-                    }
-                }
-            }
         }
     }
 
@@ -57,6 +42,36 @@ class UserDetailsViewModel(
         viewModelScope.launch {
             imageSelector.launchImagePicker()
         }
+    }
+
+    fun saveUserDetails(name: String){
+        viewModelScope.launch {
+            //Name
+            catFactsDataStorePreferences.edit {
+                val usernameKey = stringPreferencesKey(DataStoreKeys.username)
+                it[usernameKey] = name
+            }
+
+            //Image
+            userProfileImage.value?.let { image ->
+                val imageId = getImageId()
+
+                if (imageId == null) {
+                    //No image on the database, create a new one
+                    val newId =
+                        localStorageRepository.saveImageByteArray(id = null, image = image)
+                    saveImageId(newId)
+                } else {
+                    localStorageRepository.saveImageByteArray(id = imageId, image = image)
+                }
+            }
+        }
+    }
+
+    suspend fun getCurrentUsername(): String {
+        return catFactsDataStorePreferences.data
+            .firstOrNull()
+            ?.get(stringPreferencesKey(DataStoreKeys.username)) ?: ""
     }
 
     private suspend fun getImageId(): String? {

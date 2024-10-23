@@ -15,6 +15,8 @@ import com.malakiapps.catfacts.data.localDatabase.RealmLocalStorageRepository
 import com.malakiapps.catfacts.domain.AboutViewModel
 import com.malakiapps.catfacts.domain.LanguageViewModel
 import com.malakiapps.catfacts.domain.MainViewModel
+import com.malakiapps.catfacts.domain.ProfileViewModel
+import com.malakiapps.catfacts.domain.SavedFactsViewModel
 import com.malakiapps.catfacts.domain.UserDetailsViewModel
 import com.malakiapps.catfacts.domain.useCases.QueryFactsUseCase
 import com.malakiapps.catfacts.domain.useCases.ReadCurrentLanguageUseCase
@@ -55,4 +57,6 @@ val sharedModule = module {
     }
 
     viewModelOf(::UserDetailsViewModel)
+    viewModelOf(::ProfileViewModel)
+    viewModelOf(::SavedFactsViewModel)
 }

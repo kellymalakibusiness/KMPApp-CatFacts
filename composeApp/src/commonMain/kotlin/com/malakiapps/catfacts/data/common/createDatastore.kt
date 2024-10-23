@@ -24,4 +24,5 @@ internal const val DATASTORE_FILE_NAME = "catfacts.preferences_pb"
 data object DataStoreKeys {
     val language = "language"
     val image = "image"
+    val username = "username"
 }

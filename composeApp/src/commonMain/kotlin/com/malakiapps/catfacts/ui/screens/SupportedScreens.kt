@@ -6,5 +6,6 @@ enum class SupportedScreens(val destination: String) {
     SETTINGS("settings"),
     USER_DETAILS("user_details"),
     LANGUAGE("language"),
-    ABOUT("about")
+    ABOUT("about"),
+    SAVED_FACTS("saved_facts")
 }

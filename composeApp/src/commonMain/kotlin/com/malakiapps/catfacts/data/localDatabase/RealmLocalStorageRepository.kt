@@ -2,12 +2,10 @@ package com.malakiapps.catfacts.data.localDatabase
 
 import com.malakiapps.catfacts.data.localDatabase.SavedCatFactDTO.Companion.fromCatFact
 import com.malakiapps.catfacts.domain.CatFact
+import com.malakiapps.catfacts.domain.FactsSummary
 import io.realm.kotlin.Realm
-import io.realm.kotlin.UpdatePolicy
 import io.realm.kotlin.ext.query
-import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import org.mongodb.kbson.BsonObjectId
 
@@ -40,8 +38,7 @@ class RealmLocalStorageRepository(
             val item = query<SavedCatFactDTO>(
                 "text == $0",
                 text
-            )
-                .first().find()
+            ).first().find()
 
             item?.liked = enabled
 
@@ -87,9 +84,24 @@ class RealmLocalStorageRepository(
                 item.isHorizontalCard = catFact.isHorizontalCard
                 item.imageWidth = catFact.imageWidth
                 item.imageHeight = catFact.imageHeight
+                item.downloaded = enabled
             } else {
                 val newItem = catFact.fromCatFact().apply { downloaded = enabled }
                 copyToRealm(newItem)
+            }
+        }
+    }
+
+    override suspend fun onDeleteSavedFact(catFact: CatFact) {
+        realm.write {
+            val item = query<SavedCatFactDTO>(
+                "text == $0",
+                catFact.text
+            )
+                .first().find()
+
+            if(item != null){
+                item.downloaded = false
             }
         }
     }
@@ -120,5 +132,47 @@ class RealmLocalStorageRepository(
         val response = realm.query<ByteArrayImage>("_id == $0", bsonObjectId).first().find()
 
         return response?.data
+    }
+
+    override suspend fun getFactsSummary(): FactsSummary {
+        var liked = 0
+        var disliked = 0
+        var saved = 0
+
+        val savedFacts = realm
+            .query<SavedCatFactDTO>()
+            .find()
+            .map {
+                //Get all the summary values while converting to CatFact
+                if(it.liked) liked++
+                if(it.disliked) disliked++
+                if(it.downloaded) saved++
+
+                it.toCatFact()
+            }
+
+        val onlySavedFacts = savedFacts.filter { it.downloaded }
+
+        return FactsSummary(
+            likedCount = liked,
+            dislikedCount = disliked,
+            savedCount = saved,
+            savedFacts = onlySavedFacts
+        )
+    }
+
+    override fun getSavedFacts(): Flow<List<CatFact>> {
+        return realm
+            .query<SavedCatFactDTO>()
+            .asFlow()
+            .map { factList ->
+                factList.list.mapNotNull {
+                    if(it.downloaded){
+                        it.toCatFact()
+                    } else {
+                        null
+                    }
+                }
+            }
     }
 }

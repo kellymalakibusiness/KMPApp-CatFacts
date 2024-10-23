@@ -72,10 +72,12 @@ import com.malakiapps.catfacts.domain.MainViewModel
 import com.malakiapps.catfacts.ui.screens.SupportedScreens
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
+import org.koin.compose.koinInject
 
 
 @Composable
-fun MainScreen(mainViewModel: MainViewModel, modifier: Modifier = Modifier) {
+fun MainScreen(modifier: Modifier = Modifier) {
+    val mainViewModel: MainViewModel = koinInject()
     val facts by mainViewModel.catFacts.collectAsState()
     val listState = rememberLazyListState()
     var fetchingState by remember { mutableStateOf(FactsFetchingLevels.NOT_CALLING) }

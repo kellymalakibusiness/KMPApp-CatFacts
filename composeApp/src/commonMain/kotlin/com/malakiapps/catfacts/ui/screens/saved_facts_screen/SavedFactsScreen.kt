@@ -2,20 +2,29 @@ package com.malakiapps.catfacts.ui.screens.saved_facts_screen
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.Card
 import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
@@ -27,15 +36,28 @@ import catfacts.composeapp.generated.resources.delete
 import catfacts.composeapp.generated.resources.download
 import coil3.compose.SubcomposeAsyncImage
 import com.malakiapps.catfacts.domain.CatFact
-import com.malakiapps.catfacts.domain.SupportedLanguages
+import com.malakiapps.catfacts.domain.SavedFactsViewModel
 import com.malakiapps.catfacts.ui.screens.common.TopBarOnlyScaffold
 import com.malakiapps.catfacts.ui.screens.main_screen.LoadingImage
 import com.malakiapps.catfacts.ui.screens.main_screen.getLoadingHeight
 import com.malakiapps.catfacts.ui.screens.main_screen.getLoadingWidth
 import org.jetbrains.compose.resources.painterResource
+import org.koin.compose.koinInject
 
 @Composable
-fun SavedFactsScreen(navHostController: NavHostController, modifier: Modifier = Modifier) {
+fun SavedFactsScreen(navHostController: NavHostController, itemIndex: Int, modifier: Modifier = Modifier) {
+    val savedFactsViewModel: SavedFactsViewModel = koinInject()
+    val lazyListState = rememberLazyListState()
+    val savedFacts by savedFactsViewModel.savedFacts.collectAsState()
+
+    LaunchedEffect(key1 = savedFacts.isNotEmpty()){
+        if(savedFacts.isNotEmpty()){
+            lazyListState.scrollToItem(
+                index = itemIndex
+            )
+        }
+    }
+
     TopBarOnlyScaffold(
         title = "Saved Facts",
         onBackPress = {
@@ -44,23 +66,50 @@ fun SavedFactsScreen(navHostController: NavHostController, modifier: Modifier = 
         backgroundColor = MaterialTheme.colors.background,
         modifier = modifier
     ) { paddingValues ->
-        LazyColumn(
-            modifier = Modifier
-                .padding(paddingValues)
-                .padding(horizontal = 16.dp)
-        ) {
-            /*items(
-                items =
+        if (savedFacts.isEmpty()){
+            Box(contentAlignment = Alignment.Center, modifier = Modifier.fillMaxWidth().padding(top = 16.dp)){
+                Text(
+                    "All saved facts have been deleted",
+                    style = MaterialTheme.typography.body1
+                )
+            }
+        } else {
+            LazyColumn(
+                state = lazyListState,
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(paddingValues)
+                    .padding(horizontal = 16.dp),
+                verticalArrangement = Arrangement.spacedBy(16.dp),
+                contentPadding = PaddingValues(vertical = 16.dp)
             ) {
+                items(
+                    items = savedFacts
+                ) { item ->
+                    if(item.isHorizontalCard){
+                        HorizontalSavedFact(
+                            catFact = item,
+                            onDelete = {
+                                savedFactsViewModel.onDeleteFact(item)
+                            }
+                        )
+                    } else {
+                        VerticalSavedFact(
+                            catFact = item,
+                            onDelete = {
+                                savedFactsViewModel.onDeleteFact(item)
+                            }
+                        )
+                    }
+                }
 
-            }*/
-
+            }
         }
     }
 }
 
 @Composable
-fun VerticalFact(
+private fun VerticalSavedFact(
     catFact: CatFact,
     onDelete: () -> Unit,
     modifier: Modifier = Modifier
@@ -157,7 +206,7 @@ private fun SavedFactFeedbackRow(
     modifier: Modifier = Modifier
 ) {
     Row(
-        modifier = modifier,
+        modifier = modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.End
     ) {
         IconButton(

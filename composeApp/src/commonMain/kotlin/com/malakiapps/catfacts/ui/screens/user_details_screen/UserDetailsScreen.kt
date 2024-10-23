@@ -9,14 +9,17 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material.Button
+import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -35,8 +38,12 @@ import org.koin.compose.koinInject
 @Composable
 fun UserDetailsScreen(navHostController: NavHostController, modifier: Modifier = Modifier) {
     val userDetailsViewModel: UserDetailsViewModel = koinInject()
-    var name by remember { mutableStateOf("") }
+    var name by rememberSaveable { mutableStateOf("") }
     val image by userDetailsViewModel.userProfileImage.collectAsState()
+
+    LaunchedEffect(key1 = true){
+        name = userDetailsViewModel.getCurrentUsername()
+    }
     TopBarOnlyScaffold(
         title = "User details",
         onBackPress = {
@@ -72,6 +79,22 @@ fun UserDetailsScreen(navHostController: NavHostController, modifier: Modifier =
                 },
                 modifier = Modifier.fillMaxWidth()
             )
+            Spacer(modifier = Modifier.weight(1f))
+            Button(
+                onClick = {
+                    userDetailsViewModel.saveUserDetails(
+                        name = name
+                    )
+                    navHostController.navigateUp()
+                },
+                modifier = Modifier.fillMaxWidth().padding(bottom = 16.dp),
+                colors = ButtonDefaults.buttonColors(
+                    backgroundColor = MaterialTheme.colors.onSurface,
+                    contentColor = MaterialTheme.colors.surface
+                )
+            ){
+                Text("Save")
+            }
         }
     }
 }
