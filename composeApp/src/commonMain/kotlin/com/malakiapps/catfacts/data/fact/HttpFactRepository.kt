@@ -9,6 +9,7 @@ import io.ktor.client.request.get
 import io.ktor.client.request.parameter
 import io.ktor.util.network.UnresolvedAddressException
 import kotlinx.serialization.SerializationException
+import okio.IOException
 
 class HttpFactRepository(
     private val httpClient: HttpClient
@@ -22,6 +23,10 @@ class HttpFactRepository(
             return Result.ResultError(NetworkError.NO_INTERNET)
         } catch (e: SerializationException){
             return Result.ResultError(NetworkError.SERIALIZATION)
+        } catch (e: IOException){
+            return Result.ResultError(NetworkError.NO_INTERNET)
+        } catch (e: Exception){
+            return Result.ResultError(NetworkError.UNKNOWN)
         }
 
         return when(response.status.value){
