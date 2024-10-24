@@ -91,7 +91,8 @@ fun UserDetailsScreen(navHostController: NavHostController, modifier: Modifier =
                 colors = ButtonDefaults.buttonColors(
                     backgroundColor = MaterialTheme.colors.onSurface,
                     contentColor = MaterialTheme.colors.surface
-                )
+                ),
+                shape = CircleShape
             ){
                 Text("Save")
             }

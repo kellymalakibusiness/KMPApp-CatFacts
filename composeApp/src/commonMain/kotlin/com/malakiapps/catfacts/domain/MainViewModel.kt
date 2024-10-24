@@ -20,24 +20,35 @@ class MainViewModel(
     private val _catFacts = MutableStateFlow<List<CatFact?>>(emptyList())
     val catFacts: StateFlow<List<CatFact?>> = _catFacts.asStateFlow()
 
+    private val _errorMessage = MutableStateFlow<String?>(null)
+    val errorMessage: StateFlow<String?> = _errorMessage.asStateFlow()
+
     init {
         refreshFacts()
     }
 
     fun refreshFacts(){
         viewModelScope.launch {
-            val newFacts = withContext(Dispatchers.IO){
+            val response = withContext(Dispatchers.IO){
                 queryFactsUseCase.invoke()
             }
-            _catFacts.update { currentValue ->
-                buildList {
-                    addAll(
-                        currentValue.mapNotNull {
-                            it
+
+            when(response){
+                is CatFactPayload.ErrorResponse -> {
+                    _errorMessage.value = response.message
+                }
+                is CatFactPayload.CatFactListResponse -> {
+                    _catFacts.update { currentValue ->
+                        buildList {
+                            addAll(
+                                currentValue.mapNotNull {
+                                    it
+                                }
+                            )
+                            addAll(response.data)
+                            add(null)
                         }
-                    )
-                    addAll(newFacts)
-                    add(null)
+                    }
                 }
             }
         }
@@ -87,5 +98,9 @@ class MainViewModel(
         viewModelScope.launch {
             localStorageRepository.onDownloadFact(catFact, enabled)
         }
+    }
+
+    fun onDismissErrorMessage(){
+        _errorMessage.value = null
     }
 }

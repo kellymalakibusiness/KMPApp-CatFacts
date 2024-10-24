@@ -6,6 +6,7 @@ import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -14,6 +15,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.asPaddingValues
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
@@ -23,6 +25,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.AlertDialog
 import androidx.compose.material.BottomAppBar
 import androidx.compose.material.BottomNavigationItem
 import androidx.compose.material.Card
@@ -81,6 +84,7 @@ fun MainScreen(modifier: Modifier = Modifier) {
     val facts by mainViewModel.catFacts.collectAsState()
     val listState = rememberLazyListState()
     var fetchingState by remember { mutableStateOf(FactsFetchingLevels.NOT_CALLING) }
+    val errorMessage by mainViewModel.errorMessage.collectAsState()
     val shouldFetchNextPage by derivedStateOf {
             listState.layoutInfo.let { layoutInfo ->
                 val remainingItems = layoutInfo.totalItemsCount - (listState.firstVisibleItemIndex + layoutInfo.visibleItemsInfo.size)
@@ -153,6 +157,42 @@ fun MainScreen(modifier: Modifier = Modifier) {
                 }
             }
         }
+    }
+
+    if(errorMessage != null){
+        AlertDialog(
+            title = {
+                Text(
+                    "An error occurred",
+                    style = MaterialTheme.typography.button,
+                    color = MaterialTheme.colors.primary
+                )
+            },
+            text = {
+                Text(
+                    errorMessage ?: "No error message available",
+                    style = MaterialTheme.typography.body1
+                )
+            },
+            onDismissRequest = {
+                mainViewModel.onDismissErrorMessage()
+            },
+            buttons = {
+                Box(
+                    modifier = Modifier.fillMaxWidth().padding(bottom = 16.dp),
+                    contentAlignment = Alignment.Center){
+                    Text(
+                        text = "Retry",
+                        color = MaterialTheme.colors.primary,
+                        style = MaterialTheme.typography.body1,
+                        modifier = Modifier.clickable {
+                            mainViewModel.onDismissErrorMessage()
+                            mainViewModel.refreshFacts()
+                        }
+                    )
+                }
+            }
+        )
     }
 }
 

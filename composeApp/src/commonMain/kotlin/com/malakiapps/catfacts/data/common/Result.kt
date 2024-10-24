@@ -23,6 +23,15 @@ fun <T>Result<T, Error>.getOrNull(): T?{
     }
 }
 
+fun <T>Result<T, NetworkError>.getOrThrow(onDefineErrorMessage: (String) -> String): T {
+    return when(this){
+        is Result.ResultSuccess -> this.data
+        is Result.ResultError -> {
+            throw HttpException(onDefineErrorMessage(this.error.message))
+        }
+    }
+}
+
 inline fun <T, E: Error> Result<T, E>.onSuccess(action: (T) -> Unit): Result<T, E> {
     return when(this) {
         is Result.ResultError -> this
