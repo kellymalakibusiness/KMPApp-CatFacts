@@ -2,13 +2,18 @@ package com.malakiapps.catfacts.ui.screens.user_details_screen
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.Orientation
+import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.MaterialTheme
@@ -25,14 +30,22 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import catfacts.composeapp.generated.resources.Res
+import catfacts.composeapp.generated.resources.icn_profile_picture
+import catfacts.composeapp.generated.resources.lbl_edit
+import catfacts.composeapp.generated.resources.lbl_name
+import catfacts.composeapp.generated.resources.lbl_save
+import catfacts.composeapp.generated.resources.lbl_user_details
 import catfacts.composeapp.generated.resources.user_profile
 import coil3.compose.rememberAsyncImagePainter
 import com.malakiapps.catfacts.domain.UserDetailsViewModel
 import com.malakiapps.catfacts.ui.screens.common.TopBarOnlyScaffold
 import org.jetbrains.compose.resources.painterResource
+import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.koinInject
 
 @Composable
@@ -40,12 +53,13 @@ fun UserDetailsScreen(navHostController: NavHostController, modifier: Modifier =
     val userDetailsViewModel: UserDetailsViewModel = koinInject()
     var name by rememberSaveable { mutableStateOf("") }
     val image by userDetailsViewModel.userProfileImage.collectAsState()
+    val focusManager = LocalFocusManager.current
 
     LaunchedEffect(key1 = true){
         name = userDetailsViewModel.getCurrentUsername()
     }
     TopBarOnlyScaffold(
-        title = "User details",
+        title = stringResource(Res.string.lbl_user_details),
         onBackPress = {
             navHostController.navigateUp()
         },
@@ -54,7 +68,8 @@ fun UserDetailsScreen(navHostController: NavHostController, modifier: Modifier =
         Column(
             modifier = Modifier
                 .padding(paddingValues)
-                .padding(horizontal = 16.dp),
+                .padding(horizontal = 16.dp)
+                .scrollable(state = rememberScrollState(), orientation = Orientation.Vertical),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             ProfilePictureSelector(
@@ -72,16 +87,25 @@ fun UserDetailsScreen(navHostController: NavHostController, modifier: Modifier =
                 },
                 placeholder = {
                     Text(
-                        text = "Name",
+                        text = stringResource(Res.string.lbl_name),
                         style = MaterialTheme.typography.body1,
                         color = MaterialTheme.colors.onSurface
                     )
                 },
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier.fillMaxWidth(),
+                keyboardActions = KeyboardActions(
+                    onDone = {
+                        focusManager.clearFocus()
+                    }
+                ),
+                keyboardOptions = KeyboardOptions.Default.copy(
+                    imeAction = ImeAction.Done
+                )
             )
             Spacer(modifier = Modifier.weight(1f))
             Button(
                 onClick = {
+                    focusManager.clearFocus()
                     userDetailsViewModel.saveUserDetails(
                         name = name
                     )
@@ -94,7 +118,7 @@ fun UserDetailsScreen(navHostController: NavHostController, modifier: Modifier =
                 ),
                 shape = CircleShape
             ){
-                Text("Save")
+                Text(stringResource(Res.string.lbl_save))
             }
         }
     }
@@ -118,7 +142,7 @@ private fun ProfilePictureSelector(image: ByteArray?, onEdit: () -> Unit, modifi
         }
         Image(
             painter = painter,
-            contentDescription = "User profile picture",
+            contentDescription = stringResource(Res.string.icn_profile_picture),
             contentScale = ContentScale.Crop,
             modifier = Modifier
                 .size(88.dp)
@@ -126,7 +150,7 @@ private fun ProfilePictureSelector(image: ByteArray?, onEdit: () -> Unit, modifi
         )
         Spacer(Modifier.height(8.dp))
         Text(
-            text = "Edit",
+            text = stringResource(Res.string.lbl_edit),
             color = MaterialTheme.colors.primary,
             style = MaterialTheme.typography.body1
         )

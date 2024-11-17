@@ -13,7 +13,6 @@ import com.malakiapps.catfacts.data.image.HttpCatImageRepository
 import com.malakiapps.catfacts.data.localDatabase.LocalStorageRepository
 import com.malakiapps.catfacts.data.localDatabase.RealmLocalStorageRepository
 import com.malakiapps.catfacts.domain.AboutViewModel
-import com.malakiapps.catfacts.domain.LanguageViewModel
 import com.malakiapps.catfacts.domain.MainViewModel
 import com.malakiapps.catfacts.domain.ProfileViewModel
 import com.malakiapps.catfacts.domain.SavedFactsViewModel
@@ -39,15 +38,14 @@ val sharedModule = module {
     }
     singleOf(::RealmLocalStorageRepository).bind<LocalStorageRepository>()
 
-    //singleOf(::HttpFactRepository).bind<FactRepository>()
-    //singleOf(::HttpCatImageRepository).bind<CatImageRepository>()
+    singleOf(::HttpFactRepository).bind<FactRepository>()
+    singleOf(::HttpCatImageRepository).bind<CatImageRepository>()
 
-    singleOf(::DummyFactRepository).bind<FactRepository>()
-    singleOf(::DummyImageRepository).bind<CatImageRepository>()
+    //singleOf(::DummyFactRepository).bind<FactRepository>()
+    //singleOf(::DummyImageRepository).bind<CatImageRepository>()
 
     singleOf(::QueryFactsUseCase)
     viewModelOf(::MainViewModel)
-    viewModelOf(::LanguageViewModel)
     singleOf(::ReadCurrentLanguageUseCase)
 
     viewModelOf(::AboutViewModel)

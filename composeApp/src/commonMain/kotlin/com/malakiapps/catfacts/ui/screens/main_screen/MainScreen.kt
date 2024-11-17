@@ -55,13 +55,20 @@ import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import catfacts.composeapp.generated.resources.Res
 import catfacts.composeapp.generated.resources.app_name
+import catfacts.composeapp.generated.resources.btn_dislike
+import catfacts.composeapp.generated.resources.btn_download
+import catfacts.composeapp.generated.resources.btn_like
+import catfacts.composeapp.generated.resources.btn_retry
 import catfacts.composeapp.generated.resources.check
 import catfacts.composeapp.generated.resources.dislike_down
 import catfacts.composeapp.generated.resources.dislike_up
 import catfacts.composeapp.generated.resources.download
+import catfacts.composeapp.generated.resources.error_body_default
+import catfacts.composeapp.generated.resources.error_title
 import catfacts.composeapp.generated.resources.facts
 import catfacts.composeapp.generated.resources.facts_down
 import catfacts.composeapp.generated.resources.facts_up
+import catfacts.composeapp.generated.resources.icn_settings
 import catfacts.composeapp.generated.resources.like_down
 import catfacts.composeapp.generated.resources.like_up
 import catfacts.composeapp.generated.resources.line
@@ -163,14 +170,14 @@ fun MainScreen(modifier: Modifier = Modifier) {
         AlertDialog(
             title = {
                 Text(
-                    "An error occurred",
+                    stringResource(Res.string.error_title),
                     style = MaterialTheme.typography.button,
                     color = MaterialTheme.colors.primary
                 )
             },
             text = {
                 Text(
-                    errorMessage ?: "No error message available",
+                    errorMessage ?: stringResource(Res.string.error_body_default),
                     style = MaterialTheme.typography.body1
                 )
             },
@@ -182,7 +189,7 @@ fun MainScreen(modifier: Modifier = Modifier) {
                     modifier = Modifier.fillMaxWidth().padding(bottom = 16.dp),
                     contentAlignment = Alignment.Center){
                     Text(
-                        text = "Retry",
+                        text = stringResource(Res.string.btn_retry),
                         color = MaterialTheme.colors.primary,
                         style = MaterialTheme.typography.body1,
                         modifier = Modifier.clickable {
@@ -220,7 +227,7 @@ fun CatFactsTopAppBar(onSettingsClick: () -> Unit, modifier: Modifier = Modifier
                 Icon(
                     painterResource(Res.drawable.settings),
                     tint = MaterialTheme.colors.onSurface,
-                    contentDescription = "Settings"
+                    contentDescription = stringResource(Res.string.icn_settings)
                 )
             }
         }
@@ -437,7 +444,7 @@ private fun FeedbackRow(
             } else {
                 Res.drawable.like_up
             }
-            Image(painterResource(resource), contentDescription = "Like button")
+            Image(painterResource(resource), contentDescription = stringResource(Res.string.btn_like))
         }
         IconButton(
             onClick = {
@@ -449,7 +456,7 @@ private fun FeedbackRow(
             } else {
                 Res.drawable.dislike_up
             }
-            Image(painterResource(resource), contentDescription = "Dislike button")
+            Image(painterResource(resource), contentDescription = stringResource(Res.string.btn_dislike))
         }
         Spacer(modifier = Modifier.weight(1f))
         IconButton(
@@ -462,7 +469,7 @@ private fun FeedbackRow(
             } else {
                 Res.drawable.download
             }
-            Image(painterResource(resource), contentDescription = "Download button")
+            Image(painterResource(resource), contentDescription = stringResource(Res.string.btn_download))
         }
     }
 }
@@ -523,8 +530,4 @@ fun CatFact.getLoadingHeight(): Double {
 private enum class FactsFetchingLevels{
     NOT_CALLING,
     CALLING
-}
-
-enum class LogTags(val tag: String){
-    HTTP_ISSUE("Http_Issue")
 }

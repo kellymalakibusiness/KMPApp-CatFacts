@@ -34,6 +34,9 @@ import catfacts.composeapp.generated.resources.Res
 import catfacts.composeapp.generated.resources.check
 import catfacts.composeapp.generated.resources.delete
 import catfacts.composeapp.generated.resources.download
+import catfacts.composeapp.generated.resources.icn_delete
+import catfacts.composeapp.generated.resources.lbl_saved_facts
+import catfacts.composeapp.generated.resources.txt_all_facts_deleted
 import coil3.compose.SubcomposeAsyncImage
 import com.malakiapps.catfacts.domain.CatFact
 import com.malakiapps.catfacts.domain.SavedFactsViewModel
@@ -42,6 +45,7 @@ import com.malakiapps.catfacts.ui.screens.main_screen.LoadingImage
 import com.malakiapps.catfacts.ui.screens.main_screen.getLoadingHeight
 import com.malakiapps.catfacts.ui.screens.main_screen.getLoadingWidth
 import org.jetbrains.compose.resources.painterResource
+import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.koinInject
 
 @Composable
@@ -59,7 +63,7 @@ fun SavedFactsScreen(navHostController: NavHostController, itemIndex: Int, modif
     }
 
     TopBarOnlyScaffold(
-        title = "Saved Facts",
+        title = stringResource(Res.string.lbl_saved_facts),
         onBackPress = {
             navHostController.navigateUp()
         },
@@ -69,7 +73,7 @@ fun SavedFactsScreen(navHostController: NavHostController, itemIndex: Int, modif
         if (savedFacts.isEmpty()){
             Box(contentAlignment = Alignment.Center, modifier = Modifier.fillMaxWidth().padding(top = 16.dp)){
                 Text(
-                    "All saved facts have been deleted",
+                    stringResource(Res.string.txt_all_facts_deleted),
                     style = MaterialTheme.typography.body1
                 )
             }
@@ -219,7 +223,7 @@ private fun SavedFactFeedbackRow(
             } else {
                 Res.drawable.download
             }
-            Image(painterResource(Res.drawable.delete), contentDescription = "Delete button")
+            Image(painterResource(Res.drawable.delete), contentDescription = stringResource(Res.string.icn_delete))
         }
     }
 }

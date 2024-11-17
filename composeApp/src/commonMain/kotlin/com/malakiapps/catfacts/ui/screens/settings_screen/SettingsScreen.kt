@@ -19,16 +19,21 @@ import catfacts.composeapp.generated.resources.Res
 import catfacts.composeapp.generated.resources.about
 import catfacts.composeapp.generated.resources.forward
 import catfacts.composeapp.generated.resources.language
+import catfacts.composeapp.generated.resources.lbl_about
+import catfacts.composeapp.generated.resources.lbl_languages
+import catfacts.composeapp.generated.resources.lbl_settings
+import catfacts.composeapp.generated.resources.lbl_user_details
 import catfacts.composeapp.generated.resources.user_details
 import com.malakiapps.catfacts.ui.screens.SupportedScreens
 import com.malakiapps.catfacts.ui.screens.common.TopBarOnlyScaffold
 import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.painterResource
+import org.jetbrains.compose.resources.stringResource
 
 @Composable
 fun SettingsScreen(navHostController: NavHostController, modifier: Modifier = Modifier) {
     TopBarOnlyScaffold(
-        title = "Settings",
+        title = stringResource(Res.string.lbl_settings),
         onBackPress = {
             navHostController.navigateUp()
         },
@@ -41,21 +46,14 @@ fun SettingsScreen(navHostController: NavHostController, modifier: Modifier = Mo
         ) {
             SettingsRow(
                 icon = Res.drawable.user_details,
-                text = "User details",
+                text = stringResource(Res.string.lbl_user_details),
                 onClick = {
                     navHostController.navigate(route = SupportedScreens.USER_DETAILS.destination)
                 }
             )
             SettingsRow(
-                icon = Res.drawable.language,
-                text = "Language",
-                onClick = {
-                    navHostController.navigate(route = SupportedScreens.LANGUAGE.destination)
-                }
-            )
-            SettingsRow(
                 icon = Res.drawable.about,
-                text = "About",
+                text = stringResource(Res.string.lbl_about),
                 onClick = {
                     navHostController.navigate(route = SupportedScreens.ABOUT.destination)
                 }

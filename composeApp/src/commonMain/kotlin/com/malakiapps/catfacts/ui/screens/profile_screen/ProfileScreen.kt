@@ -1,10 +1,8 @@
 package com.malakiapps.catfacts.ui.screens.profile_screen
 
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -17,7 +15,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.grid.itemsIndexed
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.BackdropScaffold
@@ -39,6 +36,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import catfacts.composeapp.generated.resources.Res
+import catfacts.composeapp.generated.resources.*
 import catfacts.composeapp.generated.resources.user_profile
 import coil3.compose.SubcomposeAsyncImage
 import coil3.compose.rememberAsyncImagePainter
@@ -49,6 +47,7 @@ import com.malakiapps.catfacts.ui.screens.main_screen.LoadingImage
 import com.malakiapps.catfacts.ui.screens.main_screen.getLoadingHeight
 import com.malakiapps.catfacts.ui.screens.main_screen.getLoadingWidth
 import org.jetbrains.compose.resources.painterResource
+import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.koinInject
 
 @OptIn(ExperimentalMaterialApi::class)
@@ -94,7 +93,7 @@ private fun FrontLayerContent(savedCatFacts: List<CatFact>?, onSavedClick: (Int)
         modifier = modifier.padding(start = 16.dp, end = 16.dp, top = 16.dp)
     ) {
         Text(
-            "Saved Facts",
+            stringResource(Res.string.lbl_saved_facts),
             style = MaterialTheme.typography.button,
             color = MaterialTheme.colors.primary
         )
@@ -102,7 +101,7 @@ private fun FrontLayerContent(savedCatFacts: List<CatFact>?, onSavedClick: (Int)
         savedCatFacts?.let { foundFacts ->
             if (foundFacts.isEmpty()){
                 Text(
-                    "No Fact found. Saved Facts would be displayed here",
+                    stringResource(Res.string.txt_no_facts_found),
                     style = MaterialTheme.typography.body1
                 )
             } else {
@@ -134,7 +133,7 @@ private fun FrontLayerContent(savedCatFacts: List<CatFact>?, onSavedClick: (Int)
         } ?: run {
             //Loading
             Text(
-                "Loading...",
+                stringResource(Res.string.txt_loading),
                 style = MaterialTheme.typography.body1
             )
         }
@@ -192,7 +191,7 @@ private fun ImageColumn(image: ByteArray?, name: String, modifier: Modifier = Mo
         }
         Image(
             painter = painter,
-            contentDescription = "User profile picture",
+            contentDescription = stringResource(Res.string.icn_profile_picture),
             contentScale = ContentScale.Crop,
             modifier = Modifier
                 .size(55.dp)
@@ -213,15 +212,15 @@ fun SummaryRow(liked: Int?, disliked: Int?, saved: Int?, modifier: Modifier = Mo
         horizontalArrangement = Arrangement.SpaceEvenly
     ) {
         SummaryColumnInstance(
-            label = "liked",
+            label = stringResource(Res.string.lbl_liked),
             value = liked
         )
         SummaryColumnInstance(
-            label = "disliked",
+            label = stringResource(Res.string.lbl_disliked),
             value = disliked
         )
         SummaryColumnInstance(
-            label = "saved",
+            label = stringResource(Res.string.lbl_saved),
             value = saved
         )
     }
@@ -234,7 +233,7 @@ private fun SummaryColumnInstance(label: String, value: Int?, modifier: Modifier
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Text(
-            value?.toString() ?: "--",
+            value?.toString() ?: stringResource(Res.string.txt_loading_icon),
             style = MaterialTheme.typography.body1,
             fontSize = 16.sp
         )

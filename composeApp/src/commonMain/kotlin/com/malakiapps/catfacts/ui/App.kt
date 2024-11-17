@@ -10,7 +10,6 @@ import org.koin.compose.KoinContext
 import org.koin.compose.koinInject
 
 @Composable
-@Preview
 fun App() {
     CatFactsMaterialTheme {
         KoinContext {

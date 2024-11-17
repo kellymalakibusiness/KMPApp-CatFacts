@@ -14,15 +14,18 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
+import catfacts.composeapp.generated.resources.Res
+import catfacts.composeapp.generated.resources.*
 import com.malakiapps.catfacts.domain.AboutViewModel
 import com.malakiapps.catfacts.ui.screens.common.TopBarOnlyScaffold
+import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.koinInject
 
 @Composable
 fun AboutScreen(navHostController: NavHostController, modifier: Modifier = Modifier) {
     val aboutViewModel: AboutViewModel = koinInject()
     TopBarOnlyScaffold(
-        title = "About",
+        title = stringResource(Res.string.lbl_about),
         onBackPress = {
             navHostController.navigateUp()
         },
@@ -35,9 +38,9 @@ fun AboutScreen(navHostController: NavHostController, modifier: Modifier = Modif
         ) {
             item {
                 AboutEntry(
-                    title = "Cat Facts API",
-                    description = "Public api by White rabbit called meowfacts.",
-                    link = "https://github.com/wh-iterabb-it/meowfacts?ref=public_apis",
+                    title = stringResource(Res.string.lbl_cat_facts_api),
+                    description = stringResource(Res.string.txt_cat_facts_api_description),
+                    link = stringResource(Res.string.lnk_cat_facts),
                     onClick = { link ->
                         aboutViewModel.openLink(link)
                     }
@@ -46,9 +49,9 @@ fun AboutScreen(navHostController: NavHostController, modifier: Modifier = Modif
 
             item {
                 AboutEntry(
-                    title = "Cat Images API",
-                    description = "Public api providing a list of images of cats",
-                    link = "https://developers.thecatapi.com/view-account/ylX4blBYT9FaoVd6OhvR?report=bOoHBz-8t",
+                    title = stringResource(Res.string.lbl_cat_images_api),
+                    description = stringResource(Res.string.txt_cat_images_description),
+                    link = stringResource(Res.string.lnk_cat_images),
                     onClick = { link ->
                         aboutViewModel.openLink(link)
                     }
@@ -57,9 +60,9 @@ fun AboutScreen(navHostController: NavHostController, modifier: Modifier = Modif
 
             item {
                 AboutEntry(
-                    title = "Developer",
-                    description = "Kelly Malaki - Full stack kotlin developer(mobile & backend)",
-                    link = "https://github.com/kellymalakibusiness",
+                    title = stringResource(Res.string.lbl_developer),
+                    description = stringResource(Res.string.txt_developer_description),
+                    link = stringResource(Res.string.lnk_github),
                     onClick = { link ->
                         aboutViewModel.openLink(link)
                     }

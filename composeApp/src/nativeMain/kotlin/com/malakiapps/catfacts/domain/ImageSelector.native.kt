@@ -1,70 +1,76 @@
 package com.malakiapps.catfacts.domain
 
+import kotlinx.cinterop.ByteVar
 import kotlinx.cinterop.ExperimentalForeignApi
-import kotlinx.cinterop.ObjCAction
-import kotlinx.cinterop.refTo
-import kotlinx.coroutines.CancellableContinuation
+import kotlinx.cinterop.get
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.suspendCancellableCoroutine
 import platform.Foundation.NSData
-import platform.Foundation.NSDictionary
-import platform.UIKit.UIImage
-import platform.UIKit.UIImagePNGRepresentation
-import platform.UIKit.UIImagePickerController
-import platform.UIKit.UIImagePickerControllerDelegateProtocol
-import platform.UIKit.UIImagePickerControllerOriginalImage
-import platform.UIKit.UIImagePickerControllerSourceType
-import platform.UIKit.UINavigationControllerDelegateProtocol
-import platform.UIKit.UIViewController
+import platform.PhotosUI.PHPickerConfiguration
+import platform.PhotosUI.PHPickerFilter
+import platform.PhotosUI.PHPickerResult
+import platform.PhotosUI.PHPickerViewController
+import platform.PhotosUI.PHPickerViewControllerDelegateProtocol
+import platform.UIKit.UIApplication
 import platform.darwin.NSObject
-import platform.posix.memmove
 import kotlin.coroutines.resume
+import kotlin.coroutines.resumeWithException
+import kotlinx.cinterop.reinterpret as reinterpret1
 
-actual class ImageSelector/*(private val viewController: UIViewController): NSObject(),
-    UIImagePickerControllerDelegateProtocol, UINavigationControllerDelegateProtocol*/ {
-
+actual class ImageSelector {
     actual val image: MutableStateFlow<ByteArray?> = MutableStateFlow(null)
-    //private var continuation: CancellableContinuation<ByteArray?>? = null
 
-    actual suspend fun launchImagePicker() {
-        /*val byteArray = suspendCancellableCoroutine { cont ->
-            continuation = cont
-            val picker = UIImagePickerController()
-            picker.sourceType = UIImagePickerControllerSourceType.UIImagePickerControllerSourceTypePhotoLibrary
-            picker.delegate = this
-            //viewController.presentViewController(picker, animated = true, completion = null)
+
+    @OptIn(ExperimentalForeignApi::class)
+    actual suspend fun launchImagePicker(){
+        image.value = suspendCancellableCoroutine { continuation ->
+            val viewController = UIApplication.sharedApplication.keyWindow?.rootViewController
+                ?: return@suspendCancellableCoroutine continuation.resumeWithException(
+                    IllegalStateException("No root view controller found")
+                )
+
+            val config = PHPickerConfiguration().apply {
+                filter = PHPickerFilter.imagesFilter
+                selectionLimit = 1 // Single selection
+            }
+
+            val picker = PHPickerViewController(configuration = config)
+            picker.delegate = object : NSObject(), PHPickerViewControllerDelegateProtocol {
+                override fun picker(picker: PHPickerViewController, didFinishPicking: List<*>) {
+                    // Dismiss the picker once done
+                    picker.dismissViewControllerAnimated(true, null)
+
+                    val result = didFinishPicking.firstOrNull() as? PHPickerResult
+                    val provider = result?.itemProvider
+
+                    if (provider != null && provider.hasItemConformingToTypeIdentifier("public.image")) {
+                        provider.loadDataRepresentationForTypeIdentifier("public.image") { data, error ->
+
+                            if (error != null) {
+                                continuation.resumeWithException(Exception("An errror occurred while reading an image: Error: $error"))
+                                return@loadDataRepresentationForTypeIdentifier
+                            }
+                            continuation.resume(data?.toByteArray())
+                        }
+                    } else {
+                        continuation.resume(null)
+                    }
+                }
+            }
+
+            viewController.presentViewController(picker, animated = true, completion = null)
+
+            // Cancel the coroutine if needed
+            continuation.invokeOnCancellation {
+                picker.dismissViewControllerAnimated(true, null)
+            }
         }
-        _image.update { byteArray }*/
     }
 
-    /*@ObjCAction
-    fun imagePickerController(picker: UIImagePickerController, didFinishPickingMediaWithInfo: NSDictionary) {
-        picker.dismissViewControllerAnimated(true, completion = null)
-
-        val image = didFinishPickingMediaWithInfo.objectForKey(UIImagePickerControllerOriginalImage) as? UIImage
-        val data = image?.toNSData()?.toByteArray()
-
-        continuation?.resume(data)
-        continuation = null
+    @OptIn(ExperimentalForeignApi::class)
+    fun NSData.toByteArray(): ByteArray {
+        val bytes = this.bytes?.reinterpret1<ByteVar>()
+        return bytes?.let { ByteArray(this.length.toInt()) { index -> bytes[index] } } ?: ByteArray(0)
     }
-
-    @ObjCAction
-    override fun imagePickerControllerDidCancel(picker: UIImagePickerController) {
-        picker.dismissViewControllerAnimated(true, completion = null)
-        continuation?.resume(null)
-        continuation = null
-    }
-
-// Extension to convert UIImage to NSData and then ByteArray
-fun UIImage.toNSData(): NSData? = UIImagePNGRepresentation(this)
-
-@OptIn(ExperimentalForeignApi::class)
-fun NSData.toByteArray(): ByteArray {
-    val bytes = ByteArray(this.length.toInt())
-    memmove(bytes.refTo(0), this.bytes, this.length)
-    return bytes
-}*/
 }
