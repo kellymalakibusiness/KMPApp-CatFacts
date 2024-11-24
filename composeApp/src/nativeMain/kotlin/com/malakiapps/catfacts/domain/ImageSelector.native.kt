@@ -22,9 +22,8 @@ actual class ImageSelector {
     actual val image: MutableStateFlow<ByteArray?> = MutableStateFlow(null)
 
 
-    @OptIn(ExperimentalForeignApi::class)
     actual suspend fun launchImagePicker(){
-        image.value = suspendCancellableCoroutine { continuation ->
+        val result = suspendCancellableCoroutine<ByteArray?> { continuation ->
             val viewController = UIApplication.sharedApplication.keyWindow?.rootViewController
                 ?: return@suspendCancellableCoroutine continuation.resumeWithException(
                     IllegalStateException("No root view controller found")
@@ -36,7 +35,9 @@ actual class ImageSelector {
             }
 
             val picker = PHPickerViewController(configuration = config)
-            picker.delegate = object : NSObject(), PHPickerViewControllerDelegateProtocol {
+            var delegate: PHPickerViewControllerDelegateProtocol? = null
+
+            delegate = object : NSObject(), PHPickerViewControllerDelegateProtocol {
                 override fun picker(picker: PHPickerViewController, didFinishPicking: List<*>) {
                     // Dismiss the picker once done
                     picker.dismissViewControllerAnimated(true, null)
@@ -56,15 +57,24 @@ actual class ImageSelector {
                     } else {
                         continuation.resume(null)
                     }
+                    delegate = null
                 }
             }
 
+            picker.delegate = delegate
             viewController.presentViewController(picker, animated = true, completion = null)
 
             // Cancel the coroutine if needed
             continuation.invokeOnCancellation {
-                picker.dismissViewControllerAnimated(true, null)
+                if(delegate != null){
+                    picker.dismissViewControllerAnimated(true, null)
+                    delegate = null
+                }
             }
+        }
+
+        if(result != null){
+            image.value = result
         }
     }
 
